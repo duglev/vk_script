@@ -7,5 +7,5 @@
 Для работы требуется
 ------------
 
-* Python 2.7
+* Python 2.7 и выше
 * [vk_api](https://github.com/python273/vk_api)
