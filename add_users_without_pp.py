@@ -17,8 +17,9 @@ vk_session.auth()
 vk = vk_session.get_api()
 # Запрашиваем список поступивших заявок в группу
 response = vk.groups.getRequests(group_id=NN, count=200)
+response = response['items'] # Достаём из словаря список ID
 
-for user_id in response['items']:
+for user_id in response:
     user_response = vk.users.get(user_id=user_id)
     if user_response[0].get('deactivated') is not None:  # Проверка, не заблокирован ли пользователь
         vk.groups.removeUser(group_id=NN, user_id=user_id)
