@@ -2,14 +2,14 @@
 import vk_api
 from variables import NN, login, password
 
-pp_list_id = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
-pp_list_id = pp_list_id.read()
-pp_list_id = [int(x) for x in pp_list_id.split(',')]
+pp_list = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
+pp_list = pp_list.read()
+pp_list = [int(x) for x in pp_list.split(',')]
 
 
 def check_pp():  # Функция ищет количество совпадений среди групп пользователя
     groups_response = vk.groups.get(user_id=user_id)
-    return len(set(groups_response['items']).intersection(pp_list_id))
+    return len(set(groups_response['items']).intersection(pp_list))
 
 
 # Авторизация в ВК
@@ -23,6 +23,9 @@ response_items = response['items']  # Достаём из словаря спи�
 log_view = 2   # Режим вывода логов: 0 – без логов, 1 - только итоги, 2 - все логи
 remove_user = 0
 approve_user = 0
+
+if log_view > 0 and response['count'] > 0:
+    print("Скрипт запущен. Заявок в группу:", response['count'])
 
 for user_id in response_items:
     user_response = vk.users.get(user_id=user_id)
