@@ -4,7 +4,7 @@ from variables import NN, login, password
 
 file_list_pp = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
 list_pp = file_list_pp.read()
-list_pp = [int(x) for x in list_pp.split(',')]
+list_pp = [int(x) for x in list_pp.split('\n')]
 file_list_pp.close()
 
 file_user_pp = open("user_pp.txt", "r")
@@ -27,7 +27,7 @@ vk_session = vk_api.VkApi(login, password)
 vk_session.auth()
 vk = vk_session.get_api()
 # Запрашиваем список поступивших заявок в группу
-response = vk.groups.getMembers(group_id=NN, count=1000, offset=11295, sort="time_desc")
+response = vk.groups.getMembers(group_id=NN, count=1000, offset=21295, sort="time_desc")
 response_items = response['items']  # Достаём из словаря список ID
 
 for user_id in response_items:

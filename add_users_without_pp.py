@@ -4,7 +4,7 @@ from variables import NN, login, password
 
 file_list_pp = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
 list_pp = file_list_pp.read()
-list_pp = [int(x) for x in list_pp.split(',')]
+list_pp = [int(x) for x in list_pp.split('\n')]
 file_list_pp.close()
 
 
