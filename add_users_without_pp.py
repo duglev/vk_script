@@ -2,14 +2,20 @@
 import vk_api
 from variables import NN, login, password
 
-pp_list = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
-pp_list = pp_list.read()
-pp_list = [int(x) for x in pp_list.split(',')]
+file_list_pp = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
+list_pp = file_list_pp.read()
+list_pp = [int(x) for x in list_pp.split(',')]
+file_list_pp.close()
 
 
-def check_pp():  # Функция ищет количество совпадений среди групп пользователя
+# Функция ищет количество совпадений среди подписок пользователя.
+# Результат – процент сомнительных подписок от общего числа подписок.
+def check_pp():
     groups_response = vk.groups.get(user_id=user_id)
-    return len(set(groups_response['items']).intersection(pp_list))
+    if groups_response["count"] > 0:
+        return int((len(set(groups_response['items']).intersection(list_pp)) / groups_response["count"]) * 100)
+    else:
+        return 0
 
 
 # Авторизация в ВК
@@ -41,11 +47,11 @@ for user_id in response_items:
             if log_view == 2:
                 print("Пользователь с id", user_id, " закрыт. Добавлен.", sep="")
         else:
-            if check_pp() > 7:  # Проверка, количества сомнительных подписок
+            if check_pp() > 20:  # Проверка, количества сомнительных подписок
                 vk.groups.removeUser(group_id=NN, user_id=user_id)
                 remove_user += 1
                 if log_view == 2:
-                    print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), " Отклонён.", sep="")
+                    print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), " %", sep="")
             else:
                 vk.groups.approveRequest(group_id=NN, user_id=user_id)
                 approve_user += 1
