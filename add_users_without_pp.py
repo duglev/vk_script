@@ -47,16 +47,16 @@ for user_id in response_items:
             if log_view == 2:
                 print("Пользователь с id", user_id, " закрыт. Добавлен.", sep="")
         else:
-            if check_pp() > 20:  # Проверка, количества сомнительных подписок
+            if check_pp() > 15:  # Проверка, количества сомнительных подписок
                 vk.groups.removeUser(group_id=NN, user_id=user_id)
                 remove_user += 1
                 if log_view == 2:
-                    print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), " %", sep="")
+                    print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), "%", sep="")
             else:
                 vk.groups.approveRequest(group_id=NN, user_id=user_id)
                 approve_user += 1
                 if log_view == 2:
-                    print("Пользователь с id", user_id, " нормальный. Добавлен.", sep="")
+                    print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), "%. Добавлен.", sep="")
 
 if log_view > 0:
     if response['count'] == 0:
