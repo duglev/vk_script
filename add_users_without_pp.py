@@ -51,7 +51,7 @@ for user_id in response_items:
                 vk.groups.removeUser(group_id=NN, user_id=user_id)
                 remove_user += 1
                 if log_view == 2:
-                    print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), "%", sep="")
+                    print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), "%. Отклонён.", sep="")
             else:
                 vk.groups.approveRequest(group_id=NN, user_id=user_id)
                 approve_user += 1
