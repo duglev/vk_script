@@ -2,7 +2,7 @@
 import vk_api
 from variables import login, password
 
-file_list_pp = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
+file_list_pp = open("base/list_pp.txt", "r")  # В файле содержится список id "сомнительных" пабликов
 list_pp = file_list_pp.read()
 list_pp = [int(x) for x in list_pp.split('\n')]
 file_list_pp.close()
@@ -17,7 +17,7 @@ vk_session = vk_api.VkApi(login, password)
 vk_session.auth()
 vk = vk_session.get_api()
 
-response = vk.groups.get(user_id=567769711)
+response = vk.groups.get(user_id=505583844)
 difference_groups = set(response['items']).difference(list_pp)
 difference_groups = set(difference_groups).difference(checked_public)
 x = len(difference_groups)
@@ -43,7 +43,7 @@ for group_id in difference_groups:
         file_pp.close()
         print("Группа пропущена")
     else:
-        file_pp = open("PP.txt", "a")
+        file_pp = open("base/list_pp.txt", "a")
         file_pp.write("\n" + str(group_id))
         file_pp.close()
         print("Группа добавлена в список")

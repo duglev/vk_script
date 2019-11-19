@@ -2,7 +2,7 @@
 import vk_api
 from variables import NN, login, password
 
-file_list_pp = open("PP.txt", "r")  # В файле содержится список id "сомнительных" пабликов
+file_list_pp = open("base/list_pp.txt", "r")  # В файле содержится список id "сомнительных" пабликов
 list_pp = file_list_pp.read()
 list_pp = [int(x) for x in list_pp.split('\n')]
 file_list_pp.close()
@@ -20,13 +20,13 @@ def check_pp():
 
 # Авторизация в ВК
 vk_session = vk_api.VkApi(login, password)
-vk_session.auth()
+vk_session.auth(token_only=True)
 vk = vk_session.get_api()
 # Запрашиваем список поступивших заявок в группу
 response = vk.groups.getRequests(group_id=NN, count=200)
 response_items = response['items']  # Достаём из словаря список ID
 
-log_view = 2   # Режим вывода логов: 0 – без логов, 1 - только итоги, 2 - все логи
+log_view = 0   # Режим вывода логов: 0 – без логов, 1 - только итоги, 2 - все логи
 remove_user = 0
 approve_user = 0
 
@@ -49,6 +49,8 @@ for user_id in response_items:
         else:
             if check_pp() > 15:  # Проверка, количества сомнительных подписок
                 vk.groups.removeUser(group_id=NN, user_id=user_id)
+                if check_pp() > 50:
+                    vk.groups.ban(group_id=NN, owner_id=user_id, comment="Автоматически. Профиль с ПП.")
                 remove_user += 1
                 if log_view == 2:
                     print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), "%. Отклонён.", sep="")
