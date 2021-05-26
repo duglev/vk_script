@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import vk_api
-from variables import NN, login, password
+from variables import group_id, login, password
 
 file_list_pp = open("base/list_pp.txt", "r")  # В файле содержится список id "сомнительных" пабликов
 list_pp = file_list_pp.read()
@@ -23,7 +23,7 @@ vk_session = vk_api.VkApi(login, password)
 vk_session.auth(token_only=True)
 vk = vk_session.get_api()
 # Запрашиваем список поступивших заявок в группу
-response = vk.groups.getRequests(group_id=NN, count=200)
+response = vk.groups.getRequests(group_id=group_id, count=200)
 response_items = response['items']  # Достаём из словаря список ID
 
 log_view = 0   # Режим вывода логов: 0 – без логов, 1 - только итоги, 2 - все логи
@@ -36,26 +36,26 @@ if log_view > 0 and response['count'] > 0:
 for user_id in response_items:
     user_response = vk.users.get(user_id=user_id)
     if user_response[0].get('deactivated') is not None:  # Проверка, не заблокирован ли пользователь
-        vk.groups.removeUser(group_id=NN, user_id=user_id)
+        vk.groups.removeUser(group_id=group_id, user_id=user_id)
         remove_user += 1
         if log_view == 2:
             print("Пользователь с id", user_id, " заблокирован. Отклонён.", sep="")
     else:
         if user_response[0]["is_closed"]:  # Проверка, не закрыт ли профиль пользователя
-            vk.groups.approveRequest(group_id=NN, user_id=user_id)
+            vk.groups.approveRequest(group_id=group_id, user_id=user_id)
             approve_user += 1
             if log_view == 2:
                 print("Пользователь с id", user_id, " закрыт. Добавлен.", sep="")
         else:
             if check_pp() > 15:  # Проверка, количества сомнительных подписок
-                vk.groups.removeUser(group_id=NN, user_id=user_id)
+                vk.groups.removeUser(group_id=group_id, user_id=user_id)
                 if check_pp() > 50:
-                    vk.groups.ban(group_id=NN, owner_id=user_id, comment="Автоматически. Профиль с ПП.")
+                    vk.groups.ban(group_id=group_id, owner_id=user_id, comment="Автоматически. Профиль с ПП.")
                 remove_user += 1
                 if log_view == 2:
                     print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), "%. Отклонён.", sep="")
             else:
-                vk.groups.approveRequest(group_id=NN, user_id=user_id)
+                vk.groups.approveRequest(group_id=group_id, user_id=user_id)
                 approve_user += 1
                 if log_view == 2:
                     print("Пользователь с id", user_id, " Сомнительных подписок: ", check_pp(), "%. Добавлен.", sep="")
